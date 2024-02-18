@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "install": "npm install",
-    "build": "npm run vercel-build"
+    "install": "npm install"
     
   },
   "author": "",
