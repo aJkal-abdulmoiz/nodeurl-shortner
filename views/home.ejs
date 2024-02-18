@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+         body {
+    background-color: #002339;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-weight: 5s00;
+    font-size: 35px;
+    margin: 0 120px;
+    margin-top: 150px;
+    color: #fff;
+}
+h2{
+    font-weight: 200;
+    font-size: 30px;
+    margin: 0 120px;
+    color: #fff;
+    
+}
+h3{
+    font-weight: 500;
+    font-size: 25px;
+    margin: 0 100px;
+    
+    
+}
+
+form {
+    display: flex;
+    margin:0 120px;
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+input[type="text"] {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    width: 500px;
+}
+
+button[type="submit"] {
+    border: none;
+    border-radius: 20px;
+    background: #065994;
+    
+    color: #fff;
+    font-size: 22px;
+    font-weight: 300;
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background: #11528c;
+}
+
+#shortURL {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+}
+.btn{
+    text-align: center;
+    margin-top: 5px;
+}
+
+
+        #urlsTable {
+            width: 80%;
+            margin:8% 120px;
+            border-collapse:collapse;
+            margin-bottom: 20px;
+            background-color: #383434;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        #urlsTable th, #urlsTable td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #3b3636;
+        }
+
+        #urlsTable th {
+            background-color: #e7e6e6;
+            font-weight: bold;
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Get a </h1>
+    <h2>Short URl In Seconds</h2>
+    <!-- <h3>With Analytics of Clicks of each Url</h3> -->
+    <div>
+        <form id="urlForm">
+            <input id="input" type="text" name="url" placeholder="Enter Your Original URL">
+            <button type="submit">Generate Short URL</button>
+        </form>
+    </div>
+    <div class="btn">
+        <p id="shortURL">
+            
+        </p>
+        
+        <button id="copy">Copy</button>
+    </div>
+    
+    <% if(locals.urls) {%>
+        <table id="urlsTable">
+            <thead>
+                <th>No</th>
+                <th>Short Url</th>
+                <th>Redirect Url</th>
+                <th>Clicks</th>
+            </thead>
+            <tbody>
+                <% urls.forEach((url, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= "https://nodeurl-shortner.vercel.app/url/"+url.shortId %></td>
+                        <td><%= url.redirectURL %></td>
+                        <td><%= url.visitHistory.length %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const orgLink = document.getElementById('input').value.trim();
+            if (!orgLink) return;
+
+            try {
+                const response = await fetch('/url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: orgLink })
+                });
+
+                if (!response.ok) {
+                    console.log("Failed to generate short URL");
+                    return;
+                }
+
+                const data = await response.json();
+                document.getElementById('shortURL').innerText = `Short URL: https://nodeurl-shortner.vercel.app/url/${data.id}`;
+                
+                function copyTextToClipboard(text) {
+                    
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    
+                   
+                    textarea.select();
+                    document.execCommand('copy');
+                    
+                    
+                    document.body.removeChild(textarea);
+                }
+
+                document.getElementById('copy').addEventListener('click', function() {
+                    const shortURL = document.getElementById('shortURL').innerText.trim();
+                    
+                    copyTextToClipboard(shortURL);
+                });
+
+
+
+            } catch (error) {
+                console.log("Error connecting to the server", error);
+            }
+        });
+    </script>
+</body>
+</html>
