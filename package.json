@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
     "start": "node index.js"
     
@@ -16,5 +17,8 @@
     "nanoid": "^5.0.5",
     "nodemon": "^3.0.3",
     "shortid": "^2.2.16"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
