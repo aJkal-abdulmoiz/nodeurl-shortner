@@ -5,7 +5,6 @@ const urlRoute = require('./routes/url')
 const staticRoute = require('./routes/staticRouter')
 const URL = require('./models/url')
 const app  = express();
-const PORT =3000;
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.set('view engine','ejs');
@@ -40,4 +39,12 @@ res.redirect(entry.redirectURL)
 });
 
 
-module.exports = app;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,()=>{
+    try{
+        console.log(`The Server is Running on port:${PORT}`)
+    }
+    catch(e){
+        console.log(e)
+    }
+})
